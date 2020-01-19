@@ -73,17 +73,13 @@ else
     echo -n "<span color='#999'><span fallback='true'>  Stopped</span>"
   fi
   if [[ "${STATUS}" = "Playing" ]] || [[ "${STATUS}" = "Paused" ]]; then
-    LEFT=$(echo -n "${DATA}" | sed -r 's/&/&amp;/g' | awk -F " - " '{print $1}' | tr -d '\n') # awk is used to remove "- Remastered" or other shit from Spotify
-    RIGHT=$(echo -n "${DATA}" | sed -r 's/&/&amp;/g' | awk -F " - " '{print $2}' | tr -d '\n')
-    case "${RIGHT,,}" in # to lowercase
-      *live* | *remix* | *acoustic* | *piano* | *version* | *classical* | *instrumental* | *extended*)
-        echo -n "$LEFT"
-        echo -n " - <span size='small'>$RIGHT</span>"
-        ;;
-      *)
-        echo -n "$LEFT"
-        ;;
-    esac
+    LEFT=$(echo -n "${DATA}" | sed -r 's/&/&amp;/g' | awk -F " - " '{print $1}' | tr -d '\n')
+    echo -n "$LEFT"
+    left_length=$(expr ${#LEFT} + 3)
+    RIGHT=$(echo -n $DATA | cut -c $left_length-)
+    if [[ ${#RIGHT} -gt 1 ]]; then
+      echo -n "<span size='small'>$RIGHT</span>"
+    fi
   fi
 
   echo " </span>"
