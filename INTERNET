@@ -46,10 +46,18 @@ if [ "$statusETH" = "up" ]; then
 elif [ "$statusWIFI" = "up" ]; then
   IPaddr=$(ip addr show "$ifaceWIFI" | awk '/inet / {print $2}' | cut -d '/' -f1 | tr -d '\n')
   NetName=$(iwgetid -r | tr -d '\n')
+  SignalStrength=$(awk 'NR==3 {print substr($3, 1, 2)}' /proc/net/wireless)
   if [ "$IPaddr" = "" ]; then
     printf "<span color='#EF6C00'>   (no IP)</span>\n"
   else
-    printf "<span color='#8BC34A'> <span font_size='small'> </span> "
+    if [ "$SignalStrength" -ge 50 ]; then
+      signalcolor='#8BC34A'
+    elif [ "$SignalStrength" -ge 30 ]; then
+      signalcolor='#EF6C00'
+    else
+      signalcolor='#f44336'
+    fi
+    printf "<span color='$signalcolor'> </span><span font_size='small'> </span> <span color='#8BC34A'>"
     case "$IPaddr" in
       192.168.*) printf "%s" "${IPaddr#'192.168.'}" ;;
       10.41.*) printf "<span font_size='small'>10.41.</span>%s" "${IPaddr#'10.41.'}" ;;
