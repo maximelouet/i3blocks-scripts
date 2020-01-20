@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # TODO: refactor
 
@@ -75,8 +75,7 @@ else
   if [[ "${STATUS}" = "Playing" ]] || [[ "${STATUS}" = "Paused" ]]; then
     LEFT=$(echo -n "${DATA}" | sed -r 's/&/&amp;/g' | awk -F " - " '{print $1}' | tr -d '\n')
     echo -n "$LEFT"
-    left_length=$(expr ${#LEFT} + 3)
-    RIGHT=$(echo -n $DATA | cut -c $left_length-)
+    RIGHT=${DATA:${#LEFT}}
     if [[ ${#RIGHT} -gt 1 ]]; then
       echo -n "<span size='small'>$RIGHT</span>"
     fi
