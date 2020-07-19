@@ -11,5 +11,8 @@ if [ $(expr "$ping" : "[0-9]*$") -eq 0 ]; then
 elif [ "$ping" -ge 200 ]; then
   printf "<span color='#EF6C00'> %s <span font_size='small'>ms</span> </span>\n" "$ping"
 else
+  if [ "$ping" -eq 0 ]; then
+    ping=1
+  fi
   printf " %s <span font_size='small'>ms</span> \n" "$ping"
 fi
