@@ -56,7 +56,7 @@ elif [[ "$instance" = "none" ]]; then
 else
 
   case $BLOCK_BUTTON in
-    3) $(playerctl --player=spotify play-pause && pkill -RTMIN+13 i3blocks) ;;  # right click, pause/unpause
+    3) $(playerctl --player=spotify play-pause && pkill -RTMIN+13 i3blocks && sleep 0.1 && pkill -RTMIN+13 i3blocks) ;;  # right click, pause/unpause
     4) $(playerctl --player=spotify previous && pkill -RTMIN+13 i3blocks && sleep 0.1 && pkill -RTMIN+13 i3blocks) ;;  # scroll up, previous
     5) $(playerctl --player=spotify next && pkill -RTMIN+13 i3blocks && sleep 0.1 && pkill -RTMIN+13 i3blocks) ;;  # scroll down, next
   esac
