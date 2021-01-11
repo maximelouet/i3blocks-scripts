@@ -60,6 +60,8 @@ elif [ "$statusWIFI" = "up" ]; then
     printf "<span color='$signalcolor'> </span><span font_size='small'> </span> <span color='#8BC34A'>"
     case "$IPaddr" in
       192.168.*) printf "%s" "${IPaddr#'192.168.'}" ;;
+      10.0.*) printf "<span font_size='small'>10.0.</span>%s" "${IPaddr#'10.0.'}" ;;
+      10.1.*) printf "<span font_size='small'>10.1.</span>%s" "${IPaddr#'10.1.'}" ;;
       10.41.*) printf "<span font_size='small'>10.41.</span>%s" "${IPaddr#'10.41.'}" ;;
       *) printf "%s" "$IPaddr" ;;
     esac
