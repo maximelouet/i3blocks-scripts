@@ -22,7 +22,7 @@ if [ "$battStatus" = "Charging" ] || [ "$battRemain" = "discharg" ] || [ ${#batt
   fi
   printf "<span color='%s'> %s  %s<span font_size='small'>%% </span></span>\n" "$color" "$icon" "$battCapacity"
 else
-  if [ "$battCapacity" -lt 20 ]; then
+  if [ "$battCapacity" -lt 25 ]; then
     color="#f44336"
     icon=""
   elif [ "$battCapacity" -lt 50 ]; then
