@@ -1,15 +1,19 @@
 #!/bin/sh
 #
 # Saumon i3blocks scripts : load
-# (1 min load with colors)
+# (1 minute load with colors)
 #
 
-load=$(cut -d ' ' -f1 /proc/loadavg | tr -d '\n')
-loadC=$(echo "$load * 100" | bc -l | xargs printf "%.0f")
+nproc=$(nproc)
+warningPercent=$(echo "$nproc * 60" | bc -l | tr -d '\n')
+criticalPercent=$(echo "$nproc * 80" | bc -l | tr -d '\n')
 
-if [ "$loadC" -ge 600 ]; then
+load=$(cut -d ' ' -f1 /proc/loadavg | tr -d '\n')
+loadPercent=$(echo "$load * 100" | bc -l | xargs printf "%.0f")
+
+if [ "$loadPercent" -ge "$criticalPercent" ]; then
   color="#f44336"
-elif [ "$loadC" -ge 400 ]; then
+elif [ "$loadPercent" -ge "$warningPercent" ]; then
   color="#ff9800"
 else
   color="#cccccc"
