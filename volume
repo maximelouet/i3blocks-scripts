@@ -16,12 +16,12 @@ isheadphone=$(echo "$sinks" | grep "Active Port: analog-output-headphone")
 ismuted=$(echo "$sinks" | grep "Mute: " | tail -1 | awk '{print $2}')
 volume=$(echo "$sinks" | grep "Volume: " | tail -2 | head -1 | awk '{print $5}' | tr -d '%')
 
-if ! [ -z "$isbluetooth" ]; then
+if [ -n "$isbluetooth" ]; then
   color="#1E88E5"
   if [ "$ismuted" = "yes" ]; then
     color="#997CC5"
   fi
-elif ! [ -z "$isheadphone" ]; then
+elif [ -n "$isheadphone" ]; then
   color="#F8E744"
   if [ "$ismuted" = "yes" ]; then
     color="#FBC02D"
@@ -37,7 +37,7 @@ printf "<span color='%s'>" "$color"
 if [ "$ismuted" = "yes" ]; then
   printf "<s> "
 fi
-if ! [ -z "$isbluetooth" ]; then
+if [ -n "$isbluetooth" ]; then
   printf "<span fallback='true'>  </span>"
 fi
 if [ "$volume" -ge 40 ]; then
