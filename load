@@ -5,8 +5,8 @@
 #
 
 nproc=$(nproc)
-warningPercent=$(echo "$nproc * 60" | bc -l | tr -d '\n')
-criticalPercent=$(echo "$nproc * 80" | bc -l | tr -d '\n')
+warningPercent=$(echo "$nproc * 65" | bc -l | tr -d '\n')
+criticalPercent=$(echo "$nproc * 90" | bc -l | tr -d '\n')
 
 load=$(cut -d ' ' -f1 /proc/loadavg | tr -d '\n')
 loadPercent=$(echo "$load * 100" | bc -l | xargs printf "%.0f")
