@@ -73,7 +73,7 @@ else
     echo -n "<span color='#999'><span fallback='true'>  Stopped</span>"
   fi
   if [[ "${STATUS}" = "Playing" ]] || [[ "${STATUS}" = "Paused" ]]; then
-    DATACLEANED=$(echo -n "${DATA}" | sed -r 's/&/&amp;/g')
+    DATACLEANED=$(echo -n "${DATA}" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g; s/'"'"'/\&#39;/g')
     LEFT=$(echo -n "${DATACLEANED}" | awk -F " - " '{print $1}' | tr -d '\n')
     echo -n "$LEFT"
     RIGHT=${DATACLEANED:${#LEFT}}
