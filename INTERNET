@@ -44,7 +44,14 @@ fi
 
 if [ "$statusETH" = "up" ]; then
   printf '<span color="#8BC34A">   '
-  ip addr show "$ifaceETH" | awk '/inet / {print $2}' | cut -d '/' -f1 | tr -d '\n'
+  IPaddr=$(ip addr show "$ifaceETH" | awk '/inet / {print $2}' | cut -d '/' -f1 | tr -d '\n')
+  case "$IPaddr" in
+    192.168.*) printf "%s" "${IPaddr#'192.168.'}" ;;
+    10.0.*) printf "<span font_size='small'>10.0.</span>%s" "${IPaddr#'10.0.'}" ;;
+    10.1.*) printf "<span font_size='small'>10.1.</span>%s" "${IPaddr#'10.1.'}" ;;
+    10.41.*) printf "<span font_size='small'>10.41.</span>%s" "${IPaddr#'10.41.'}" ;;
+    *) printf "%s" "$IPaddr" ;;
+  esac
   printf '</span>'
   if [ "$VPNStatus" = "activated" ]; then
     printf " <span color='#EC407A'> </span>"
