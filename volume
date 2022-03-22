@@ -10,11 +10,11 @@ case $BLOCK_BUTTON in
   5) pactl set-sink-volume @DEFAULT_SINK@ -2% ;; # scroll down : decrease vol by 2%
 esac
 
-sinks=$(pactl list sinks)
+sinks=$(pacmd list-sinks)
 isbluetooth=$(echo "$sinks" | grep bluez)
 isheadphone=$(echo "$sinks" | grep "Active Port: analog-output-headphone")
-ismuted=$(echo "$sinks" | grep "Mute: " | tail -1 | awk '{print $2}')
-volume=$(echo "$sinks" | grep "Volume: " | tail -2 | head -1 | awk '{print $5}' | tr -d '%')
+ismuted=$(echo "$sinks" | grep -A40 "* index:" | grep "muted: " | awk '{print $2}')
+volume=$(echo "$sinks" | grep -A40 "* index:" | grep "volume: " | head -1 | awk '{print $5}' | tr -d '%')
 
 if [ -n "$isbluetooth" ]; then
   color="#1E88E5"
