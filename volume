@@ -13,8 +13,8 @@ esac
 sinks=$(pacmd list-sinks)
 isbluetooth=$(echo "$sinks" | grep bluez)
 isheadphone=$(echo "$sinks" | grep "Active Port: analog-output-headphone")
-ismuted=$(echo "$sinks" | grep -A40 "* index:" | grep "muted: " | awk '{print $2}')
-volume=$(echo "$sinks" | grep -A40 "* index:" | grep "volume: " | head -1 | awk '{print $5}' | tr -d '%')
+ismuted=$(echo "$sinks" | grep -A40 -F "* index:" | grep "muted: " | awk '{print $2}')
+volume=$(echo "$sinks" | grep -A40 -F "* index:" | grep "volume: " | head -1 | awk '{print $5}' | tr -d '%')
 
 if [ -n "$isbluetooth" ]; then
   color="#1E88E5"
