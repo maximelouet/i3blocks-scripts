@@ -28,10 +28,10 @@ else
   color="#cccccc"
 fi
 
-if [ "$swapUsed" -ge 40 ]; then
-  swapPart="<b color='#f44336'> [S] </b>"
-elif [ "$swapUsed" -ge 10 ]; then
-  swapPart="<b color='#ff9800'> [S] </b>"
+if [ "$swapUsed" -ge 50 ]; then
+  swapPart="<span weight='bold' color='#f44336'> [S]</span>"
+elif [ "$swapUsed" -ge 20 ]; then
+  swapPart="<span weight='bold' color='#ff9800'> [S]</span>"
 else
   swapPart=""
 fi
