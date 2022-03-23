@@ -20,17 +20,17 @@ free=$(free | tail -2)
 ramUsed=$(echo "$free" | head -1 | awk '{ print int($3 / $2 * 100) }')
 swapUsed=$(echo "$free" | tail -1 | awk '{ print int($3 / $2 * 100) }')
 
-if [ "$ramUsed" -ge 90 ]; then
+if [ "$ramUsed" -ge 92 ]; then
   color="#f44336"
-elif [ "$ramUsed" -ge 70 ]; then
+elif [ "$ramUsed" -ge 80 ]; then
   color="#ff9800"
 else
   color="#cccccc"
 fi
 
-if [ "$swapUsed" -ge 50 ]; then
+if [ "$swapUsed" -ge 75 ]; then
   swapPart="<span weight='bold' color='#f44336'> [S]</span>"
-elif [ "$swapUsed" -ge 20 ]; then
+elif [ "$swapUsed" -ge 50 ]; then
   swapPart="<span weight='bold' color='#ff9800'> [S]</span>"
 else
   swapPart=""
