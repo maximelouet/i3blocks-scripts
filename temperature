@@ -4,7 +4,7 @@
 # temperature (display hardware temperature)
 #
 
-temp=$(sensors "$BLOCK_INSTANCE" | grep Tdie | awk '{print substr($2,2);}' | cut -d '.' -f1)
+temp=$(sensors "$BLOCK_INSTANCE" | grep Tctl | awk '{print substr($2,2);}' | cut -d '.' -f1)
 
 if [ "$temp" -ge 80 ]; then
   color="#f44336"
