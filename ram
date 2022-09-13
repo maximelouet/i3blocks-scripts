@@ -9,7 +9,7 @@ case $BLOCK_BUTTON in
   3)
     ramUsed=$(free -h | tail -2 | head -1 | awk '{ print $3 " / " $2 }')
     swapUsed=$(free -h | tail -2 | tail -1 | awk '{ print $3 " / " $2 }')
-    topEaters=$(ps aux --sort=-rss | tail -n +2 | head -n6 | awk '{ print $11 }' | sed 's:.*/::')
+    topEaters=$(ps aux --sort=-rss | tail -n +2 | head -n10 | awk '{ print $11 }' | sed 's:.*/::' | uniq)
     dunstify -t 8000 -u low "RAM usage" "$ramUsed"
     dunstify -t 8000 -u low "Swap usage" "$swapUsed"
     dunstify -t 8000 -u low "Top RAM eaters" "$topEaters"
