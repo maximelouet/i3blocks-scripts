@@ -6,7 +6,7 @@
 
 ifaceWIFI=$(echo /sys/class/net/*/wireless | awk -F '/' '{ print $5 }')
 ifaceETH=$(echo /sys/class/net/en*/ | awk '{ print $NF }' | awk -F '/' '{ print $5 }')
-VPNStatus=$(nmcli -g type,uuid -c no connection show --active | grep "vpn:" | cut -d ':' -f 2 | xargs nmcli -f STATE con show | awk '{ print $2 }')
+VPNStatus=$(nmcli -g type,uuid -c no connection show --active | grep "vpn:" | cut -d ':' -f2 | xargs nmcli -f GENERAL.STATE con show | awk '{ print $2 }')
 
 case $BLOCK_BUTTON in
   2)
@@ -21,12 +21,12 @@ case $BLOCK_BUTTON in
       message="$IP\n<u>IPv4</u>: $IP4 <i>(copied)</i>\n<u>IPv6</u>: $IP6"
     fi
     notify-send "External IP address" "$message"
-    echo -n "$IP4" | xclip -i -selection clipboard 1>/dev/null 2>&1
+    printf "%s" "$IP4" | xclip -i -selection clipboard 1>/dev/null 2>&1
     ;;
   3)
     IP=$(ip addr show | awk '/inet / {print $2}' | grep -v "127.0.0.1" | cut -d '/' -f1 | tr -d '\n')
     notify-send "IP address" "$IP (copied)"
-    echo -n "$IP" | xclip -i -selection clipboard 1>/dev/null 2>&1
+    printf "%s" "$IP" | xclip -i -selection clipboard 1>/dev/null 2>&1
     ;;
 esac
 
@@ -60,7 +60,7 @@ if [ "$statusETH" = "up" ]; then
   fi
   printf ' \n'
 elif [ "$statusWIFI" = "up" ]; then
-  IPaddr=$(ip addr show "$ifaceWIFI" | awk '/inet / {print $2}' | cut -d '/' -f1 | tr -d '\n')
+  IPaddr=$(ip addr show "$ifaceWIFI" | awk '/inet / {print $2}' | cut -d '/' -f1)
   NetName=$(iwgetid -r | tr -d '\n')
   SignalStrength=$(awk 'NR==3 {print substr($3, 1, 2)}' /proc/net/wireless)
   if [ "$IPaddr" = "" ]; then
@@ -73,7 +73,7 @@ elif [ "$statusWIFI" = "up" ]; then
     else
       signalcolor='#f44336'
     fi
-    printf "<span color='$signalcolor'> </span><span font_size='small'> </span> <span color='#8BC34A'>"
+    printf "<span color='%s'> </span><span font_size='small'> </span> <span color='#8BC34A'>" "$signalcolor"
     case "$IPaddr" in
       192.168.*) printf "%s" "${IPaddr#'192.168.'}" ;;
       10.0.*) printf "<span font_size='small'>10.0.</span>%s" "${IPaddr#'10.0.'}" ;;
