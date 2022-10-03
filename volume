@@ -17,7 +17,7 @@ if [[ "$sink" == *"bluez"* ]]; then isbluetooth=1; fi
 if [[ "$sink" == *"Active Port: analog-output-headphone"* ]]; then isheadphone=1; fi
 # I can we can use `pactl get-sink-mute @DEFAULT_SINK@` but it's less efficient :)
 if [[ "$sink" == *"Mute: yes"* ]]; then ismuted=1; fi
-volume=$(echo "$sink" | grep "Volume: front" | awk '{print $5}' | tr -d '%')
+volume=$(echo "$sink" | grep "Volume: " | head -1 | awk '{print $5}' | tr -d '%')
 
 if [ -n "$isbluetooth" ]; then
   if [ -n "$ismuted" ]; then
