@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Saumon i3blocks scripts
-# volume (display main volume, mute on right click and change on scroll)
+# volume (pulseaudio volume display and control)
 #
 
 case $BLOCK_BUTTON in

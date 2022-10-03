@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Saumon i3blocks scripts
-# INTERNET (wired/wifi network info with external ip on middle click)
+# INTERNET (wired/wifi network info)
 #
 
 ifaceWIFI=$(echo /sys/class/net/*/wireless | awk -F '/' '{ print $5 }')
@@ -9,10 +9,10 @@ ifaceETH=$(echo /sys/class/net/en*/ | awk '{ print $NF }' | awk -F '/' '{ print 
 VPNStatus=$(nmcli -g type,uuid -c no connection show --active | grep "vpn:" | cut -d ':' -f2 | xargs nmcli -f GENERAL.STATE con show | awk '{ print $2 }')
 
 case $BLOCK_BUTTON in
-  2)
-    IP=$(curl -s "https://ip.saumon.io" | tr -d '\n')
-    IP4=$(curl -s "https://ip4.saumon.io" | tr -d '\n')
-    IP6=$(curl -s "https://ip6.saumon.io" | tr -d '\n')
+  2) # middle click: show external IPs and copy external IPv4
+    IP=$(curl -s "https://ip.saumon.io")
+    IP4=$(curl -s "https://ip4.saumon.io")
+    IP6=$(curl -s "https://ip6.saumon.io")
     if [ "$IP" = "$IP6" ]; then
       message="$IP\n<u>IPv4</u>: $IP4 <i>(copied)</i>"
     elif [ "$IP" = "$IP4" ]; then
@@ -23,7 +23,7 @@ case $BLOCK_BUTTON in
     notify-send "External IP address" "$message"
     printf "%s" "$IP4" | xclip -i -selection clipboard 1>/dev/null 2>&1
     ;;
-  3)
+  3) # right click: show and copy local IPv4
     IP=$(ip addr show | awk '/inet / {print $2}' | grep -v "127.0.0.1" | head -1 | cut -d '/' -f1)
     notify-send "IPv4 address" "$IP (copied)"
     printf "%s" "$IP" | xclip -i -selection clipboard 1>/dev/null 2>&1
@@ -44,7 +44,7 @@ fi
 
 if [ "$statusETH" = "up" ]; then
   printf '<span color="#8BC34A">   '
-  IPaddr=$(ip addr show "$ifaceETH" | awk '/inet / {print $2}' | cut -d '/' -f1 | tr -d '\n')
+  IPaddr=$(ip addr show "$ifaceETH" | awk '/inet / {print $2}' | cut -d '/' -f1)
   case "$IPaddr" in
     192.168.*) printf "%s" "${IPaddr#'192.168.'}" ;;
     10.0.*) printf "<span font_size='small'>10.0.</span>%s" "${IPaddr#'10.0.'}" ;;

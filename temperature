@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Saumon i3blocks scripts
-# temperature (display hardware temperature)
+# temperature (hardware temperature)
 #
 
 temp=$(sensors "$BLOCK_INSTANCE" | grep Tctl | awk '{print substr($2,2);}' | cut -d '.' -f1)
@@ -20,4 +20,4 @@ else
   icon=""
 fi
 
-printf "<span color='%s'> %s  %s<span font_size='small'>°C</span></span>\n" "$color" "$icon" "$temp" "$battRemain"
+printf "<span color='%s'> %s  %s<span font_size='small'>°C</span></span>\n" "$color" "$icon" "$temp"

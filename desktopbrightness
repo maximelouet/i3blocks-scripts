@@ -1,10 +1,9 @@
 #!/bin/sh
 #
 # Saumon i3blocks scripts
-# desktopbrightness (display current Dell brightness in % and change on click)
+# desktopbrightness (display and change external monitor brightness)
 #
 
-# instance: 5 for main screen and 6 for secondary
 command="ddcutil --bus $BLOCK_INSTANCE"
 
 case $BLOCK_BUTTON in

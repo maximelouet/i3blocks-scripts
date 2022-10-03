@@ -7,7 +7,6 @@
 battery=${BLOCK_INSTANCE:-BAT0}
 
 capacity=$(<"/sys/class/power_supply/$battery/capacity")
-status=$(<"/sys/class/power_supply/$battery/status")
 charging=$(<"/sys/class/power_supply/AC/online")
 
 if [ "$charging" -eq 1 ]; then

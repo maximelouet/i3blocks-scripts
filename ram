@@ -1,12 +1,12 @@
 #!/bin/sh
 #
-# Saumon i3blocks scripts : RAM
-# (current ram usage % with colors swap warning)
+# Saumon i3blocks scripts
+# ram (current ram usage with swap warning)
 #
 
 case $BLOCK_BUTTON in
-  2) gnome-system-monitor & ;;
-  3)
+  2) gnome-system-monitor & ;; # middle click: show process manager
+  3) # right click: print top RAM eaters
     ramUsed=$(free -h | tail -2 | head -1 | awk '{ print $3 " / " $2 }')
     swapUsed=$(free -h | tail -2 | tail -1 | awk '{ print $3 " / " $2 }')
     topEaters=$(ps aux --sort=-rss | tail -n +2 | head -n10 | awk '{ print $11 }' | sed 's:.*/::' | uniq)

@@ -1,9 +1,11 @@
 #!/bin/sh
 #
 # Saumon i3blocks scripts
-# updates (display number of pending Arch updates)
+# updates (number of pending Arch Linux updates)
 #
 
+# trickle is used to limit bandwidth
+# we don't want background things to take up all of it
 number=$(trickle -s -d500 -u200 checkupdates | wc -l)
 
 if [ "$number" -ge 10 ]; then

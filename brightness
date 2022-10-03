@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Saumon i3blocks scripts
-# brightness (display current screen brightness in % and change on scroll)
+# brightness (laptop brightness control)
 #
 
 command="brightnessctl -m"
