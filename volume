@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Saumon i3blocks scripts
 # volume (display main volume, mute on right click and change on scroll)
@@ -10,24 +10,27 @@ case $BLOCK_BUTTON in
   5) pactl set-sink-volume @DEFAULT_SINK@ -4% ;; # scroll down : decrease vol by 4%
 esac
 
-active_sink=$(pactl info | sed -En 's/Default Sink: (.*)/\1/p')
+active_sink=$(pactl get-default-sink)
 sink=$(pactl list sinks | grep -A100 "Name: $active_sink")
-isbluetooth=$(echo "$sink" | grep bluez)
-isheadphone=$(echo "$sink" | grep "Active Port: analog-output-headphone")
-ismuted=$(echo "$sink" | grep "Mute: " | awk '{print $2}')
-volume=$(echo "$sink" | grep "Volume: " | head -1 | awk '{print $5}' | tr -d '%')
+if [[ "$sink" == *"bluez"* ]]; then isbluetooth=1; fi
+if [[ "$sink" == *"Active Port: analog-output-headphone"* ]]; then isheadphone=1; fi
+# I can we can use `pactl get-sink-mute @DEFAULT_SINK@` but it's less efficient :)
+if [[ "$sink" == *"Mute: yes"* ]]; then ismuted=1; fi
+volume=$(echo "$sink" | grep "Volume: front" | awk '{print $5}' | tr -d '%')
 
 if [ -n "$isbluetooth" ]; then
-  color="#1E88E5"
-  if [ "$ismuted" = "yes" ]; then
+  if [ -n "$ismuted" ]; then
     color="#997CC5"
+  else
+    color="#1E88E5"
   fi
 elif [ -n "$isheadphone" ]; then
-  color="#F8E744"
-  if [ "$ismuted" = "yes" ]; then
+  if [ -n "$ismuted" ]; then
     color="#FBC02D"
+  else
+    color="#F8E744"
   fi
-elif [ "$ismuted" = "yes" ]; then
+elif [ -n "$ismuted" ]; then
   color="#EF6C00"
 else
   color="#dddddd"
@@ -35,7 +38,7 @@ fi
 
 printf "<span color='%s'>" "$color"
 
-if [ "$ismuted" = "yes" ]; then
+if [ -n "$ismuted" ]; then
   printf "<s> "
 fi
 if [ -n "$isbluetooth" ]; then
@@ -49,7 +52,7 @@ fi
 
 printf "<small>%%</small>"
 
-if [ "$ismuted" = "yes" ]; then
+if [ -n "$ismuted" ]; then
   printf " </s>"
 fi
 
