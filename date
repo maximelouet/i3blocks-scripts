@@ -1,13 +1,21 @@
 #!/bin/sh
 #
 # Saumon i3blocks scripts
-# date (display date and calendar popup on click)
+# date (short date with quick copy actions)
 #
 
 case $BLOCK_BUTTON in
-  1) gsimplecal ;;
-  2) date +%s | tr -d '\n' | xclip -i -selection clipboard ;;
-  3) date +%s | tr -d '\n' | xclip -i -selection clipboard ;;
+  1) gsimplecal ;; # simple click: show small calendar
+  2) # middle click: show and copy current UNIX timestamp
+    date=$(date +%s)
+    echo "$date" | xclip -i -selection clipboard -rmlastnl
+    notify-send -u low "Current timestamp" "$date <i>(copied)</i>"
+    ;;
+  3) # right click: show and copy current ISO 8601 datetime string
+    date=$(date --iso-8601=seconds)
+    echo "$date" | xclip -i -selection clipboard -rmlastnl
+    notify-send -u low "Current datetime" "$date <i>(copied)</i>"
+    ;;
 esac
 
 date '+ %a  %m-%d '
