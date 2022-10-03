@@ -61,11 +61,12 @@ if [ "$statusETH" = "up" ]; then
   printf ' \n'
 elif [ "$statusWIFI" = "up" ]; then
   IPaddr=$(ip addr show "$ifaceWIFI" | awk '/inet / {print $2}' | cut -d '/' -f1)
-  NetName=$(iwgetid -r | tr -d '\n')
-  SignalStrength=$(awk 'NR==3 {print substr($3, 1, 2)}' /proc/net/wireless)
   if [ "$IPaddr" = "" ]; then
     printf "<span color='#EF6C00'>   (no IP)</span>\n"
   else
+    NetName=$(iwgetid -r)
+    SignalStrength=$(awk 'NR==3 {print substr($3, 1, 2)}' /proc/net/wireless)
+    Is5GHz=$(iwgetid -f | grep "Frequency:5")
     if [ "$SignalStrength" -ge 50 ]; then
       signalcolor='#8BC34A'
     elif [ "$SignalStrength" -ge 30 ]; then
@@ -82,11 +83,11 @@ elif [ "$statusWIFI" = "up" ]; then
       *) printf "%s" "$IPaddr" ;;
     esac
     printf "</span> <span font_size='small' color='#cccccc'>on</span> "
-    case "$NetName" in  # yeah what a shitty way to know if the network is 5GHz, right?
-      *-5GHz) printf "%s <span color='#1E88E5' font_weight='bold'>5</span>" "${NetName%?????}" ;;
-      *-5G) printf "%s <span color='#1E88E5' font_weight='bold'>5</span>" "${NetName%???}" ;;
-      *) printf "%s" "$NetName" ;;
-    esac
+    if [ -n "$Is5GHz" ]; then
+      printf "<span color='#5eb4ff'>%s</span>" "$NetName"
+    else
+      printf "%s" "$NetName"
+    fi
     if [ "$VPNStatus" = "activated" ]; then
       printf " <span color='#EC407A'> </span>"
     elif [ "$VPNStatus" = "activating" ]; then
