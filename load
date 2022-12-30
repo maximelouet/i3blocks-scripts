@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Saumon i3blocks scripts
 # load (1 minute load with colors)
