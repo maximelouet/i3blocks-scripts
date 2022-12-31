@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 #
 # Saumon i3blocks scripts
 # ping (current ping in ms to cloudfare)

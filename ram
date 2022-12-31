@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 #
 # Saumon i3blocks scripts
 # ram (current ram usage with swap warning)

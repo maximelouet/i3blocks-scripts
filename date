@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 #
 # Saumon i3blocks scripts
 # date (short date with quick copy actions)
