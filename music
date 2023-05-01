@@ -56,23 +56,40 @@ elif [ "$instance" = "none" ]; then
 
   echo "<span color='#999999'><span fallback='true'>  </span>Idle </span>"
 
-else
+else  # spotify or others
+
+  PLAYER=""
+  ICON=""
+  PLAYERARG=""
+  if pgrep -x "spotify" > /dev/null; then
+    PLAYER="spotify"
+    ICON=""
+  else
+    if playerctl metadata | grep firefox > /dev/null; then
+      PLAYER="firefox"
+      ICON=""
+    fi
+  fi
+
+  if [ -n "$PLAYER" ]; then
+    PLAYERARG="--player=$PLAYER"
+  fi
 
   case $BLOCK_BUTTON in
-    3) playerctl --player=spotify play-pause && pkill -RTMIN+13 i3blocks && sleep 0.1 && pkill -RTMIN+13 i3blocks ;;  # right click, pause/unpause
-    4) playerctl --player=spotify previous && pkill -RTMIN+13 i3blocks && sleep 0.1 && pkill -RTMIN+13 i3blocks ;;  # scroll up, previous
-    5) playerctl --player=spotify next && pkill -RTMIN+13 i3blocks && sleep 0.1 && pkill -RTMIN+13 i3blocks ;;  # scroll down, next
+    3) playerctl "$PLAYERARG" play-pause && pkill -RTMIN+13 i3blocks && sleep 0.1 && pkill -RTMIN+13 i3blocks && sleep 0.1 && pkill -RTMIN+13 i3blocks ;;  # right click, pause/unpause
+    4) playerctl "$PLAYERARG" previous && pkill -RTMIN+13 i3blocks && sleep 0.1 && pkill -RTMIN+13 i3blocks && sleep 0.1 && pkill -RTMIN+13 i3blocks ;;  # scroll up, previous
+    5) playerctl "$PLAYERARG" next && pkill -RTMIN+13 i3blocks && sleep 0.1 && pkill -RTMIN+13 i3blocks && sleep 0.1 && pkill -RTMIN+13 i3blocks ;;  # scroll down, next
   esac
 
-  STATUS=$(playerctl --player=spotify status 2> /dev/null)
-  DATA=$(playerctl --player=spotify metadata --format "{{ artist }} – {{ title }}" 2> /dev/null)
+  STATUS=$(playerctl "$PLAYERARG" status 2> /dev/null)
+  DATA=$(playerctl "$PLAYERARG" metadata --format "{{ artist }} – {{ title }}" 2> /dev/null)
 
   if [ "$STATUS" = "Playing" ]; then # TODO: check that data isn't empty (and below)
-    echo -n "<span color='#8BC34A'><span fallback='true'> </span> "
+    echo -n "<span color='#8BC34A'>$ICON<span fallback='true'> </span> "
   elif [ "$STATUS" = "Paused" ]; then
-    echo -n "<span color='#c7610c'><span fallback='true'> </span> "
+    echo -n "<span color='#c7610c'>$ICON<span fallback='true'> </span> "
   else
-    echo -n "<span color='#999'><span fallback='true'>  Stopped</span>"
+    echo -n "<span color='#999'>$ICON<span fallback='true'>  Stopped</span>"
   fi
   if [ "$STATUS" = "Playing" ] || [ "$STATUS" = "Paused" ]; then
     DATACLEANED=$(echo -n "${DATA}" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g; s/'"'"'/\&#39;/g')
