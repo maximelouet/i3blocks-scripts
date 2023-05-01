@@ -20,9 +20,9 @@ free=$(free | tail -2)
 ramUsed=$(echo "$free" | head -1 | awk '{ print int($3 / $2 * 100) }')
 swapUsed=$(echo "$free" | tail -1 | awk '{ print int($3 / $2 * 100) }')
 
-if [ "$ramUsed" -ge 92 ]; then
+if [ "$ramUsed" -ge 90 ]; then
   color="#f44336"
-elif [ "$ramUsed" -ge 80 ]; then
+elif [ "$ramUsed" -ge 85 ]; then
   color="#ff9800"
 else
   color="#cccccc"
