@@ -96,5 +96,6 @@ elif [ "$statusWIFI" = "up" ]; then
     printf " \n"
   fi
 else
-  printf "<span color='#f44336'> internet c'est cassé </span>\n"
+  printf "<span color='#ffffff'>  (no network)  </span>\n"
+  exit 33
 fi
