@@ -6,7 +6,15 @@
 
 # trickle is used to limit bandwidth
 # we don't want background things to take up all of it
-number=$(trickle -s -d500 -u200 checkupdates | wc -l)
+updates=$(trickle -s -d500 -u200 checkupdates)
+
+case $BLOCK_BUTTON in
+  2) # middle click: show list
+    zenity --info --text="<span font_family='monospace'>$updates</span>"
+    ;;
+esac
+
+number=$(echo "$updates" | wc -l)
 
 if [ "$number" -ge 10 ]; then
   printf "<span color='#ff9800'>   %s </span>\n" "$number"
