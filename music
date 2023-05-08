@@ -76,9 +76,10 @@ else  # spotify or others
   fi
 
   case $BLOCK_BUTTON in
-    3) playerctl "$PLAYERARG" play-pause && pkill -RTMIN+13 i3blocks && sleep 0.1 && pkill -RTMIN+13 i3blocks && sleep 0.1 && pkill -RTMIN+13 i3blocks ;;  # right click, pause/unpause
-    4) playerctl "$PLAYERARG" previous && pkill -RTMIN+13 i3blocks && sleep 0.1 && pkill -RTMIN+13 i3blocks && sleep 0.1 && pkill -RTMIN+13 i3blocks ;;  # scroll up, previous
-    5) playerctl "$PLAYERARG" next && pkill -RTMIN+13 i3blocks && sleep 0.1 && pkill -RTMIN+13 i3blocks && sleep 0.1 && pkill -RTMIN+13 i3blocks ;;  # scroll down, next
+    3) playerctl "$PLAYERARG" play-pause ;;&  # right click, pause/unpause
+    4) playerctl "$PLAYERARG" previous ;;&  # scroll up, previous
+    5) playerctl "$PLAYERARG" next ;;&  # scroll down, next
+    3|4|5) pkill -RTMIN+13 i3blocks && sleep 0.1 && pkill -RTMIN+13 i3blocks && sleep 0.1 && pkill -RTMIN+13 i3blocks ;;
   esac
 
   STATUS=$(playerctl "$PLAYERARG" status 2> /dev/null)
