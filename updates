@@ -14,7 +14,7 @@ case $BLOCK_BUTTON in
     ;;
 esac
 
-number=$(echo "$updates" | wc -l)
+number=$(printf "%s" "$updates" | wc -l)
 
 if [ "$number" -ge 10 ]; then
   printf "<span color='#ff9800'>   %s </span>\n" "$number"
