@@ -1,29 +1,102 @@
 #!/usr/bin/env sh
 #
 # Saumon i3blocks scripts
-# brightness (laptop brightness control)
+# brightness (brightness control for laptops and external monitors)
+# Dependencies: `brightnessctl` (setuid) for laptops
+#               `ddcutil` for desktop external monitors
+# We could use brightnessctl with the ddcci kernel module, but it does not work on <6.3 as of 2023-05, so here we are
+#   with ddcutil calls. It might be faster anyway though.
 #
 
-command="brightnessctl -m"
+# Chassis types: https://www.dmtf.org/standards/SMBIOS
+# 3 is Desktop
+if [ "$(cat /sys/class/dmi/id/chassis_type)" = "3" ]; then
 
-case $BLOCK_BUTTON in
-  3) # right click: toggle min/full brightness
-    rounded=$($command | cut -d ',' -f4 |  tr -d '%')
-    if [ "$rounded" -ge 50 ]; then
-      command="sudo brightnessctl -m set 100%"
-    else
-      command="sudo brightnessctl -m set 1"
-    fi
-    ;;
-  4) # scroll up: increase brightness by 2%
-    command="sudo brightnessctl -m set -m +2%"
-    ;;
-  5) # scroll down: decrease brightness by 2%
-    command="sudo brightnessctl -m set -m 2%-"
-    ;;
-esac
+  # Initialise cache
+  [ -e "$XDG_CACHE_HOME/ddcutil_detect" ] || ddcutil --brief detect > "$XDG_CACHE_HOME/ddcutil_detect"
 
-current=$($command | cut -d ',' -f4 |  tr -d '%')
+  # Match monitor name to I2C bus number
+  monitor_name=${desktop_monitor:-"Monitor"}
+  bus_number=$(grep -C2 "$monitor_name" "$XDG_CACHE_HOME/ddcutil_detect" | grep i2c | head -n1 | cut -d'-' -f2)
+
+  command="ddcutil --bus $bus_number"
+
+  case $BLOCK_BUTTON in
+    2) # middle click: toggle night/day brightness
+      current=$($command getvcp 10 --brief | awk '{print $4}')
+      if [ "$current" -le 20 ]; then
+        if [ "$BLOCK_INSTANCE" -eq 6 ]; then
+          new=100
+        else
+          new=60
+        fi
+      else
+        if [ "$BLOCK_INSTANCE" -eq 6 ]; then
+          new=20
+        else
+          new=0
+        fi
+      fi
+      ;;
+    3) # right click: set min/full brightness depending on context
+      current=$($command getvcp 10 --brief | awk '{print $4}')
+      if [ "$current" -ge 50 ]; then
+        new=100
+      else
+        new=1
+      fi
+      ;;
+    4) # scroll up: increase brightness by 20%
+      current=$($command getvcp 10 --brief | awk '{print $4}')
+      if [ "$current" -ge 80 ]; then
+        new=100
+      else
+        new=$(expr $current + 20)
+      fi
+      ;;
+    5) # scroll down: decrease brightness by 20%
+      current=$($command getvcp 10 --brief | awk '{print $4}')
+      if [ "$current" -le 20 ]; then
+        new=0
+      else
+        new=$(expr $current - 20)
+      fi
+      ;;
+  esac
+
+  if [ -n "$new" ]; then
+    printf " <span fallback='true'>  </span>%s<span font_size='small'>%%</span> \n" "$new"
+    $command setvcp 10 "$new" --noverify &
+    exit 0
+  fi
+
+  current=$($command getvcp 10 --brief | awk '{print $4}')
+
+else
+
+  command="brightnessctl -m"
+
+  case $BLOCK_BUTTON in
+    3) # right click: toggle min/full brightness
+      rounded=$($command | cut -d ',' -f4 |  tr -d '%')
+      if [ "$rounded" -ge 50 ]; then
+        command="brightnessctl -m set 100%"
+      else
+        command="brightnessctl -m set 1"
+      fi
+      ;;
+    4) # scroll up: increase brightness by 2%
+      command="brightnessctl -m set -m +2%"
+      ;;
+    5) # scroll down: decrease brightness by 2%
+      command="brightnessctl -m set -m 2%-"
+      ;;
+  esac
+
+  current=$($command | cut -d ',' -f4 |  tr -d '%')
+
+fi
+
 
 if [ -z "$current" ]; then
   printf " <span fallback='true'>  </span>?? \n"
