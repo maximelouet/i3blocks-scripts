@@ -76,6 +76,15 @@ if [ "$(cat /sys/class/dmi/id/chassis_type)" = "3" ]; then
   fi
 
   current=$($command getvcp 10 --brief | awk '{print $4}')
+  # When ddcutil fails, it returns "DDC communication failed for monitor on bus /dev/i2c-X"
+  # In that case, retry
+  if [ "$current" = "for" ]; then
+    current=$($command getvcp 10 --brief | awk '{print $4}')
+  fi
+  # If we still don't have anything, give up, but at least hide the "for"
+  if [ "$current" = "for" ]; then
+    current=""
+  fi
 
 else
 
