@@ -6,7 +6,14 @@
 
 ifaceWIFI=$(echo /sys/class/net/*/wireless | awk -F '/' '{ print $5 }')
 ifaceETH=$(echo /sys/class/net/en*/ | awk '{ print $NF }' | awk -F '/' '{ print $5 }')
-VPNStatus=$(nmcli -g type,uuid -c no connection show --active | grep "vpn:" | cut -d ':' -f2 | xargs nmcli -f GENERAL.STATE con show | awk '{ print $2 }')
+
+defaultRoute=$(ip route get 1.1.1.1)
+VPNActive=0
+# If the default route does not go through a classic wireless or wired device,
+#   we can reasonably assume there's an active VPN.
+if ! echo "$defaultRoute" | grep -e ' dev wlp' -e ' dev enp' > /dev/null; then
+  VPNActive=1
+fi
 
 case $BLOCK_BUTTON in
   2) # middle click: show external IPs and copy external IPv4
@@ -53,10 +60,8 @@ if [ "$statusETH" = "up" ]; then
     *) printf "%s" "$IPaddr" ;;
   esac
   printf '</span>'
-  if [ "$VPNStatus" = "activated" ]; then
+  if [ "$VPNActive" = "1" ]; then
     printf " <span color='#EC407A'> </span>"
-  elif [ "$VPNStatus" = "activating" ]; then
-    printf " <span color='#777777'> </span>"
   fi
   printf ' \n'
 elif [ "$statusWIFI" = "up" ]; then
@@ -88,10 +93,8 @@ elif [ "$statusWIFI" = "up" ]; then
     else
       printf "%s" "$NetName"
     fi
-    if [ "$VPNStatus" = "activated" ]; then
+    if [ "$VPNActive" = "1" ]; then
       printf " <span color='#EC407A'> </span>"
-    elif [ "$VPNStatus" = "activating" ]; then
-      printf " <span color='#777777'> </span>"
     fi
     printf " \n"
   fi
