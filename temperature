@@ -4,6 +4,11 @@
 # temperature (hardware temperature)
 #
 
+if ! command -v sensors >/dev/null; then
+  echo " !dep "
+  exit 33
+fi
+
 temp=$(sensors "$BLOCK_INSTANCE" | grep Tctl | awk '{print substr($2,2);}' | cut -d '.' -f1)
 
 if [ "$temp" -ge 80 ]; then

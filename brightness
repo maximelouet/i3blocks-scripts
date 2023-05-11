@@ -12,6 +12,11 @@
 # 3 is Desktop
 if [ "$(cat /sys/class/dmi/id/chassis_type)" = "3" ]; then
 
+  if ! command -v ddcutil >/dev/null; then
+    echo " !dep "
+    exit 33
+  fi
+
   # Initialise cache
   [ -e "$XDG_CACHE_HOME/ddcutil_detect" ] || ddcutil --brief detect > "$XDG_CACHE_HOME/ddcutil_detect"
 
@@ -73,6 +78,11 @@ if [ "$(cat /sys/class/dmi/id/chassis_type)" = "3" ]; then
   current=$($command getvcp 10 --brief | awk '{print $4}')
 
 else
+
+  if ! command -v brightnessctl >/dev/null; then
+    echo " !dep "
+    exit 33
+  fi
 
   command="brightnessctl -m"
 

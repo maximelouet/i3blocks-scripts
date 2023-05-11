@@ -4,6 +4,11 @@
 # updates (number of pending Arch Linux updates)
 #
 
+if ! command -v checkupdates >/dev/null || ! command -v trickle >/dev/null; then
+  echo " !dep "
+  exit 33
+fi
+
 # trickle is used to limit bandwidth
 # we don't want background things to take up all of it
 updates=$(trickle -s -d500 -u200 checkupdates)

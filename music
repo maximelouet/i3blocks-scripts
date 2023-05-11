@@ -6,6 +6,11 @@
 
 # TODO: refactor (really?)
 
+if ! command -v playerctl >/dev/null; then
+  echo " !dep "
+  exit 33
+fi
+
 lockfile="/tmp/saumon-music-instance.lock"
 instance=$(cat "$lockfile" 2>/dev/null)
 

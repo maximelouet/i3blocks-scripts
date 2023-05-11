@@ -4,6 +4,11 @@
 # volume (pulseaudio volume display and control)
 #
 
+if ! command -v pactl >/dev/null; then
+  echo " !dep "
+  exit 33
+fi
+
 case $BLOCK_BUTTON in
   2) pgrep pavucontrol || pavucontrol & ;;& # middle click: bring up volume mixer
   3) pactl set-sink-mute @DEFAULT_SINK@ toggle ;;& # right click: toggle mute
