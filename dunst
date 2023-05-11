@@ -1,0 +1,25 @@
+#!/usr/bin/env sh
+#
+# Saumon i3blocks scripts
+# dunst (toggle notifs and show previous ones)
+#
+
+if ! command -v dunstctl >/dev/null; then
+  echo " !dep "
+  exit 33
+fi
+
+case $BLOCK_BUTTON in
+  2) # middle click: show previous notification
+    dunstctl history-pop
+    ;;
+  3) # right click: toggle do not disturb
+    dunstctl set-paused toggle
+    ;;
+esac
+
+if [ "$(dunstctl is-paused)" = "true" ]; then
+  echo "<span color='#f44336'></span>"
+else
+  echo "<span color='#dddddd'></span>"
+fi
