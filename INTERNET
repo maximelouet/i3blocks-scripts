@@ -65,6 +65,10 @@ if [ "$statusETH" = "up" ]; then
   fi
   printf ' \n'
 elif [ "$statusWIFI" = "up" ]; then
+  if ! command -v iwgetid >/dev/null; then
+    echo " !dep "
+    exit 33
+  fi
   IPaddr=$(ip addr show "$ifaceWIFI" | awk '/inet / {print $2}' | cut -d '/' -f1)
   if [ "$IPaddr" = "" ]; then
     printf "<span color='#EF6C00'>   (no IP)</span>\n"
