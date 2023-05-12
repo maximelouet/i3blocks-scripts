@@ -89,7 +89,7 @@ elif [ "$statusWIFI" = "up" ]; then
     esac
     printf "</span> <span font_size='small' color='#cccccc'>on</span> "
     if [ -n "$Is5GHz" ]; then
-      printf "<span color='#f5b1ff'>%s</span>" "$NetName"
+      printf "<span color='#ef87ff'>%s</span>" "$NetName"
     else
       printf "%s" "$NetName"
     fi
