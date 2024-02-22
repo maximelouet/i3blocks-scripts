@@ -18,7 +18,7 @@ if [ "$(cat /sys/class/dmi/id/chassis_type)" = "3" ]; then
   fi
 
   # Initialise cache
-  [ -e "$XDG_CACHE_HOME/ddcutil_detect" ] || ddcutil --brief detect > "$XDG_CACHE_HOME/ddcutil_detect"
+  [ -e "$XDG_CACHE_HOME/ddcutil_detect" ] || ddcutil --brief detect | grep -v "should not exist" > "$XDG_CACHE_HOME/ddcutil_detect"
 
   # Match monitor name to I2C bus number
   monitor_name=${desktop_monitor:-"Monitor"}
@@ -28,7 +28,7 @@ if [ "$(cat /sys/class/dmi/id/chassis_type)" = "3" ]; then
 
   case $BLOCK_BUTTON in
     2) # middle click: toggle night/day brightness
-      current=$($command getvcp 10 --brief | awk '{print $4}')
+      current=$($command getvcp 10 --brief | tail -n1 | awk '{print $4}')
       if [ "$current" -le 20 ]; then
         if [ "$BLOCK_INSTANCE" -eq 6 ]; then
           new=100
@@ -44,7 +44,7 @@ if [ "$(cat /sys/class/dmi/id/chassis_type)" = "3" ]; then
       fi
       ;;
     3) # right click: set min/full brightness depending on context
-      current=$($command getvcp 10 --brief | awk '{print $4}')
+      current=$($command getvcp 10 --brief | tail -n1 | awk '{print $4}')
       if [ "$current" -ge 50 ]; then
         new=100
       else
@@ -52,7 +52,7 @@ if [ "$(cat /sys/class/dmi/id/chassis_type)" = "3" ]; then
       fi
       ;;
     4) # scroll up: increase brightness by 20%
-      current=$($command getvcp 10 --brief | awk '{print $4}')
+      current=$($command getvcp 10 --brief | tail -n1 | awk '{print $4}')
       if [ "$current" -ge 80 ]; then
         new=100
       else
@@ -60,7 +60,7 @@ if [ "$(cat /sys/class/dmi/id/chassis_type)" = "3" ]; then
       fi
       ;;
     5) # scroll down: decrease brightness by 20%
-      current=$($command getvcp 10 --brief | awk '{print $4}')
+      current=$($command getvcp 10 --brief | tail -n1 | awk '{print $4}')
       if [ "$current" -le 20 ]; then
         new=0
       else
@@ -71,15 +71,15 @@ if [ "$(cat /sys/class/dmi/id/chassis_type)" = "3" ]; then
 
   if [ -n "$new" ]; then
     printf " <span fallback='true'>  </span>%s<span font_size='small'>%%</span> \n" "$new"
-    $command setvcp 10 "$new" --noverify &
+    $command setvcp 10 "$new" --noverify > /dev/null &
     exit 0
   fi
 
-  current=$($command getvcp 10 --brief | awk '{print $4}')
+  current=$($command getvcp 10 --brief | tail -n1 | awk '{print $4}')
   # When ddcutil fails, it returns "DDC communication failed for monitor on bus /dev/i2c-X"
   # In that case, retry
   if [ "$current" = "for" ]; then
-    current=$($command getvcp 10 --brief | awk '{print $4}')
+    current=$($command getvcp 10 --brief | tail -n1 | awk '{print $4}')
   fi
   # If we still don't have anything, give up, but at least hide the "for"
   if [ "$current" = "for" ]; then
